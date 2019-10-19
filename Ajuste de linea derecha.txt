@@ -1,0 +1,6 @@
+
+//Alignament to right in Edit
+DWORD ALIGNMENT = ES_RIGHT;
+DWORD oldStyle = GetWindowLong(Display->Handle, GWL_Style);
+DWORD newStyle = (oldStyle & ~(ES_LEFT | ES_CENTER | ES_RIGHT)) | alignment;
+SetWindowLong(Display->Handle, GWL_STYLE, newStyle);
