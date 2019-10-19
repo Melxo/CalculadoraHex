@@ -320,6 +320,8 @@ void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
     cero=false;
     opera=false;
     insert=false;
+    leftshift=0;
+    rightshift=0;
     fila= 0;
         for(int i=0; i<=FIL; i++){
             for(int j=0; j<=COL; j++){
@@ -392,7 +394,7 @@ void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
     VPrincipal->CheckBoxHexa->Checked=false;
     VPrincipal->ClientHeight=510;
     VPrincipal->Panel3->Top=224;
-    VPrincipal->Panel3->Visible=VPrincipal->CheckBoxDeci->Checked;
+    VPrincipal->Panel3->Visible=true;
     VPrincipal->Panel4->Visible=false;
     VPrincipal->Image1->Visible=true;
     VPrincipal->Button12->Visible=true;
@@ -414,8 +416,8 @@ void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
     VPrincipal->CheckBoxDeci->Checked=false;
     VPrincipal->ClientHeight=634;
     VPrincipal->Panel3->Top=352;
-    VPrincipal->Panel4->Visible=VPrincipal->CheckBoxHexa->Checked;
-    VPrincipal->Panel3->Visible=VPrincipal->CheckBoxHexa->Checked;
+    VPrincipal->Panel4->Visible=true;
+    VPrincipal->Panel3->Visible=true;
     VPrincipal->Image1->Visible=false;
     VPrincipal->Button12->Visible=false;
     VPrincipal->Button18->Width=113;
@@ -429,5 +431,46 @@ void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
     Edit1->Text="0x";
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TVPrincipal::MenuSpainClick(TObject *Sender)
+{
+    VPrincipal->Panel5->Color=clRed;
+    VPrincipal->Panel4->Color=clYellow;
+    VPrincipal->Panel3->Color=clRed;
+    VPrincipal->CheckBoxDeci->Color=clRed;
+    VPrincipal->CheckBoxHexa->Color=clRed;
+    VPrincipal->CheckBoxDeci->Font->Color=clBlack;
+    VPrincipal->CheckBoxHexa->Font->Color=clBlack;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuRepublicaClick(TObject *Sender)
+{
+    VPrincipal->Panel5->Color=clRed;
+    VPrincipal->Panel4->Color=clYellow;
+    VPrincipal->Panel3->Color=clPurple;
+    VPrincipal->CheckBoxDeci->Font->Color=clBlack;
+    VPrincipal->CheckBoxHexa->Font->Color=clBlack;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuAlemaniaClick(TObject *Sender)
+{
+    VPrincipal->Color=clGreen;
+    VPrincipal->Panel5->Color=clBlack;
+    VPrincipal->Panel4->Color=clRed;
+    VPrincipal->Panel3->Color=clYellow;
+    VPrincipal->CheckBoxDeci->Color=clBlack;
+    VPrincipal->CheckBoxHexa->Color=clBlack;
+    VPrincipal->CheckBoxDeci->Font->Color=clWhite;
+    VPrincipal->CheckBoxHexa->Font->Color=clWhite;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuDecimalClick(TObject *Sender)
+{
+    VPrincipal->CheckBoxDeci->Checked=true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuHexadecimalClick(TObject *Sender)
+{
+    VPrincipal->CheckBoxHexa->Checked=true;
+}
+//---------------------------------------------------------------------------
 

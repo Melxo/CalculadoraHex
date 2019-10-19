@@ -1,9 +1,9 @@
 object VPrincipal: TVPrincipal
-  Left = 648
-  Top = 362
-  BorderStyle = bsDialog
+  Left = 423
+  Top = 278
+  BorderStyle = bsSingle
   Caption = 'Calculadora'
-  ClientHeight = 634
+  ClientHeight = 636
   ClientWidth = 379
   Color = clBackground
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,7 @@ object VPrincipal: TVPrincipal
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
@@ -1042,7 +1043,7 @@ object VPrincipal: TVPrincipal
       Checked = True
       Color = clRed
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -20
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
@@ -1062,7 +1063,7 @@ object VPrincipal: TVPrincipal
       Caption = 'Hexadecimal'
       Color = clRed
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -20
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
@@ -1072,6 +1073,43 @@ object VPrincipal: TVPrincipal
       ShowHint = True
       TabOrder = 6
       OnClick = OnClickHexa
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 8
+    Top = 8
+    object MenuModo: TMenuItem
+      Caption = 'Modo'
+      ShortCut = 16461
+      object MenuDecimal: TMenuItem
+        Caption = 'Decimal'
+        ShortCut = 16452
+        OnClick = MenuDecimalClick
+      end
+      object MenuHexadecimal: TMenuItem
+        Caption = 'Hexadecimal'
+        ShortCut = 16456
+        OnClick = MenuHexadecimalClick
+      end
+    end
+    object MenuColor: TMenuItem
+      Caption = 'Color'
+      ShortCut = 16451
+      object MenuSpain: TMenuItem
+        Caption = 'Espa'#241'a'
+        ShortCut = 16453
+        OnClick = MenuSpainClick
+      end
+      object MenuRepublica: TMenuItem
+        Caption = 'Rep'#250'blica'
+        ShortCut = 16466
+        OnClick = MenuRepublicaClick
+      end
+      object MenuAlemania: TMenuItem
+        Caption = 'Alemania'
+        ShortCut = 16449
+        OnClick = MenuAlemaniaClick
+      end
     end
   end
 end

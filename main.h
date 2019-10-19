@@ -9,6 +9,7 @@
 #include <Forms.hpp>
 #include <ExtCtrls.hpp>
 #include <Graphics.hpp>
+#include <Menus.hpp>
 //---------------------------------------------------------------------------
 class TVPrincipal : public TForm
 {
@@ -55,6 +56,14 @@ __published:	// IDE-managed Components
     TCheckBox *CheckBoxHexa;
     TButton *Button31;
     TButton *Button30;
+    TMainMenu *MainMenu1;
+    TMenuItem *MenuModo;
+    TMenuItem *MenuDecimal;
+    TMenuItem *MenuHexadecimal;
+    TMenuItem *MenuColor;
+    TMenuItem *MenuSpain;
+    TMenuItem *MenuRepublica;
+    TMenuItem *MenuAlemania;
     void __fastcall OnClickNum(TObject *Sender);
     void __fastcall ButtonOperator(TObject *Sender);
     void __fastcall ButtonsClear(TObject *Sender);
@@ -62,6 +71,11 @@ __published:	// IDE-managed Components
     void __fastcall OnClickDeci(TObject *Sender);
     void __fastcall OnClickHexa(TObject *Sender);
     void __fastcall ButtonOperatorHex(TObject *Sender);
+    void __fastcall MenuSpainClick(TObject *Sender);
+    void __fastcall MenuRepublicaClick(TObject *Sender);
+    void __fastcall MenuAlemaniaClick(TObject *Sender);
+    void __fastcall MenuDecimalClick(TObject *Sender);
+    void __fastcall MenuHexadecimalClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
     __fastcall TVPrincipal(TComponent* Owner);

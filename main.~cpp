@@ -5,9 +5,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <iostream>
-using namespace std;
-#include <string>
+//#include <string>
 #define FIL 99
 #define COL 2
 #define SUMA 1
@@ -23,11 +21,11 @@ using namespace std;
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TVPrincipal *VPrincipal;
-double data[FIL][COL], sol=0, memo=0, raiz=0;
-uint8_t fila=0;
-int datahex[FIL][COL];
-int solhex=0;
+double data[FIL][COL], sol=0, raiz=0;
+int fila=0, memo=0;
+int datahex[FIL][COL], solhex=0, operando=0, leftshift=0, rightshift=0;
 bool divi=false, insert=false, opera=false, cero=false, hexa=false;
+bool shiftL=false, shiftR=false;
 void calculadora(int, double);
 void calcuhexa(int, int);
 double redondeo(double);
@@ -70,6 +68,7 @@ void __fastcall TVPrincipal::OnClickNum(TObject *Sender)
     data[0][0]= SUMA;  // Asume primer numero positivo por defecto
     opera=true;     // Para el signo menos
     insert=true;    // Para detectar numero en Edit1
+    if(hexa){}
 }
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonOperator(TObject *Sender)
@@ -77,32 +76,30 @@ void __fastcall TVPrincipal::ButtonOperator(TObject *Sender)
 if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
 }else if(!insert ){Edit1->Text="Error insert num";
 }else{
-    if(Sender == Button14){                            // 1 = suma
-        data[fila][1]= Edit1->Text.ToDouble();
+    data[fila][1]= Edit1->Text.ToDouble();
+
+    if(Sender == Button14){                            // suma
         fila++;
         data[fila][0]= SUMA;
         Edit2->Text=Edit2->Text+data[fila-1][1]+"+";
         Edit1->Clear();
         insert=false;
     }
-    if(Sender == Button15){                            // 2 = resta
-        data[fila][1]= Edit1->Text.ToDouble();
+    if(Sender == Button15){                            // resta
         fila++;
         data[fila][0]= RESTA;
         Edit1->Clear();
         Edit2->Text=Edit2->Text+data[fila-1][1]+"-";
         insert=false;
     }
-    if(Sender == Button16){                            // 3 = producto
-        data[fila][1]= Edit1->Text.ToDouble();
+    if(Sender == Button16){                            // producto
         fila++;
         data[fila][0]= PRODUCTO;
         Edit2->Text=Edit2->Text+data[fila-1][1]+"x";
         Edit1->Clear();
         insert=false;
     }
-    if(Sender == Image2){                              // 4 = división
-        data[fila][1]= Edit1->Text.ToDouble();
+    if(Sender == Image2){                              // división
         fila++;
         data[fila][0]= DIVISION;
         Edit2->Text=Edit2->Text+data[fila-1][1]+"/";
@@ -111,12 +108,11 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
         insert=false;
     }
     if(Sender == Image1){                              // raíz
-        double temp = Edit1->Text.ToDouble();
+        double temp = data[fila][1];
         if(temp < 0){
             VPrincipal->Edit1->Text="Solución no real";
             goto Label2;
         }
-        data[fila][1]= Edit1->Text.ToDouble();
         raiz = sqrt(data[fila][1]);
         data[fila][1]= redondeo(raiz);
         Edit2->Text=Edit2->Text+"SQRT("+temp+")=";
@@ -125,7 +121,6 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
     }
     if(Sender == Button18){                              // Botón igual
         sol = 0;
-        data[fila][1]= Edit1->Text.ToDouble();
         Edit2->Text=Edit2->Text+data[fila][1]+"=";
             for(uint8_t i=0; i<=fila; i++){
                 calculadora(data [i][0], data [i][1]);
@@ -145,55 +140,107 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
 void __fastcall TVPrincipal::ButtonOperatorHex(TObject *Sender)
 {
 if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
-}else if(!insert ){Edit1->Text="Error insert num";
+}else if(!insert){Edit1->Text="Error insert num";
+//}else if(hexa){TVPrincipal::ButtonsClear(Button18);
 }else{
-    int operando = StrToInt("0x"+Edit1->Text);
 
-    if(Sender == Button14){                            // 1 = suma
+    if(Sender == Button14){                            // suma HEX
+        operando = Edit1->Text.ToInt();
         datahex[fila][1] = operando;
         fila++;
         datahex[fila][0]= SUMA;
         Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+"+";
-        Edit1->Clear();
+        Edit1->Text="0x";
         insert=false;
     }
-    if(Sender == Button15){                            // 2 = resta
-        datahex[fila][1]= operando;
+    if(Sender == Button15){                            // resta HEX
+        operando = Edit1->Text.ToInt();
+        datahex[fila][1] = operando;
         fila++;
         datahex[fila][0]= RESTA;
         Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+"-";
-        Edit1->Clear();
+        Edit1->Text="0x";
         insert=false;
     }
-    if(Sender == Button16){                            // 3 = producto
-        datahex[fila][1]= Edit1->Text.ToInt();
+    if(Sender == Button16){                            // producto HEX
+        operando = Edit1->Text.ToInt();
+        datahex[fila][1] = operando;
         fila++;
         datahex[fila][0]= PRODUCTO;
-        Edit2->Text=Edit2->Text+data[fila-1][1]+"x";
-        Edit1->Clear();
+        Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+"*";
+        Edit1->Text="0x";
         insert=false;
     }
-    if(Sender == Image2){                              // 4 = división
-        datahex[fila][1]= Edit1->Text.ToInt();
+    if(Sender == Image2){                              // división HEX
+        operando = Edit1->Text.ToInt();
+        datahex[fila][1] = operando;
         fila++;
         datahex[fila][0]= DIVISION;
-        Edit2->Text=Edit2->Text+data[fila-1][1]+"/";
-        Edit1->Clear();
+        Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+"/";
+        Edit1->Text="0x";
         divi=true;
         insert=false;
     }
-
-    if(Sender == Button23){                              // 1 = AND
-        datahex[fila][1]= Edit1->Text.ToInt();
-        solhex = datahex[fila][1];
-        Edit2->Text=Edit2->Text+IntToStr(solhex)+"&";
+    if(Sender == Button23){                              // AND
+        operando = Edit1->Text.ToInt();
+        datahex[fila][1]= operando;
+        fila++;
+        datahex[fila][0]= AND;
+        Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+" AND ";
         Edit1->Text="0x";
         insert=false;
-        hexa=true;
     }
-    if(Sender == Button18){                              // Botón igual
+    if(Sender == Button24){                              // OR
+        operando = Edit1->Text.ToInt();
+        datahex[fila][1]= operando;
+        fila++;
+        datahex[fila][0]= OR;
+        Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+" OR ";
+        Edit1->Text="0x";
+        insert=false;
+    }
+    if(Sender == Button26){                              // XOR
+        operando = Edit1->Text.ToInt();
+        datahex[fila][1]= operando;
+        fila++;
+        datahex[fila][0]= XOR;
+        Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+" XOR ";
+        Edit1->Text="0x";
+        insert=false;
+    }
+    if(Sender == Button25){                              // NOT
+        Edit2->Text="NOT (0x"+Edit1->Text+")=";
+        solhex = ~operando;
+        Edit1->Text="0x"+IntToHex(solhex, 4);
+        insert=false;
+    }
+    if(Sender == Button30){                              // Shift lefth<<
+        shiftR=false;
+        if(shiftL){goto next1;}
+        leftshift=0;
+        operando = Edit1->Text.ToInt();
+        Edit2->Text="("+Edit1->Text+") << =";
+        next1:
+        leftshift++;
+        solhex = operando<<leftshift;
+        Edit1->Text="0x"+IntToHex(solhex, 4);
+        shiftL=true;
+    }
+    if(Sender == Button31){                              // Shift right>>
+        shiftL=false;
+        if(shiftR){goto next2;}
+        rightshift=0;
+        operando = Edit1->Text.ToInt();
+        Edit2->Text="("+Edit1->Text+") >> =";
+        next2:
+        rightshift++;
+        solhex = operando>>rightshift;
+        Edit1->Text="0x"+IntToHex(solhex, 4);
+        shiftR=true;
+    }
+    if(Sender == Button18){                              // Botón igual HEX
         solhex= 0;
-        int operando = StrToInt("0x"+Edit1->Text);
+        operando = Edit1->Text.ToInt();
         datahex[fila][1] = operando;
         Edit2->Text=Edit2->Text+"0x"+IntToHex(operando, 4)+"=";
             for(uint8_t i=0; i<=fila; i++){
@@ -203,7 +250,6 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
                 goto Label1;
                 }
             }
-        Edit1->Clear();
         Edit1->Text="0x"+IntToHex(solhex, 4);
         //TVPrincipal::ButtonsClear(Button18);
         Label1:
@@ -211,7 +257,7 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
 }
 }
 //---------------------------------------------------------------------------
-void calculadora(int oper, double dato){
+void calculadora(int oper, double dato){               // Decimal
     switch (oper){
         case SUMA: sol += dato;
                 break;
@@ -227,47 +273,73 @@ void calculadora(int oper, double dato){
     }
 }
 //---------------------------------------------------------------------------
-void calcuhexa(int oper, int dato){
+void calcuhexa(int oper, int dato){                    // Hexadecimal
     switch (oper){
         case SUMA: solhex += dato;
-                break;
+                   break;
+
         case RESTA: solhex -= dato;
-                break;
+                    break;
+
         case PRODUCTO: solhex *= dato;
-                break;
+                       break;
+
         case DIVISION: if(divi && dato==0){
-                cero=true;
-                }else{solhex /= dato;
-                      solhex=redondeo(sol);
-                break;}
+                       cero=true;
+                       }else{solhex /= dato;
+                       break;}
+
+        case AND: solhex &= dato; break;
+
+        case OR:  solhex |= dato; break;
+
+        case XOR: solhex ^= dato; break;
     }
 }
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
 {
-    if(Sender == Button13){           // Cancelar (Borra todo)
-    Edit1->Clear();
+    if(!hexa && Sender == Button13){           // Cancelar (Borra todo)
+        Edit1->Clear();
+        Edit2->Clear();
+        divi=false;
+        cero=false;
+        opera=false;
+        insert=false;
+        fila= 0;
+            for(int i=0; i<=FIL; i++){
+                for(int j=0; j<=COL; j++){
+                    data[i][j]=0;
+                }
+            }
+    }
+    else if(hexa && Sender == Button13){        // Cancelar (Borra todo) Hex
+    Edit1->Text="0x";
     Edit2->Clear();
     divi=false;
     cero=false;
     opera=false;
     insert=false;
+    leftshift=0;
+    rightshift=0;
     fila= 0;
         for(int i=0; i<=FIL; i++){
             for(int j=0; j<=COL; j++){
                 datahex[i][j]=0;
-                data[i][j]=0;
             }
         }
-    }                                // Cancelar Entrada (Borra última entrada)
-    if(Sender == Button22){Edit1->Clear();}
+    }
+                                     // Cancelar Entrada (Borra última entrada)
+    if(!hexa && Sender == Button22){Edit1->Clear();}
+    else if(hexa && Sender == Button22){Edit1->Text="0x";;}
 
-    if(Sender == Button18){           // Cancelar (Borra todo menos Edit1)
-    Edit2->Clear();
+    if(Sender == Button18){          // Cancelar (Borra todo menos Edit1)
+    //Edit2->Clear();
     divi=false;
     cero=false;
     opera=false;
     insert=true;
+    hexa=false;
     fila= 0;
         for(int i=0; i<=FIL; i++){
             for(int j=0; j<=COL; j++){
@@ -280,10 +352,17 @@ void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonsMemo(TObject *Sender)
 {
-    if(Sender == Panel1){                              // Memoria
-        if(!insert ){Edit1->Text="Error insert num";
+    if(!hexa && Sender == Panel1){                      // Memoria
+        if(!insert){Edit1->Text="Error insert num";
         }else{
         memo = Edit1->Text.ToDouble();
+        VPrincipal->Panel1->Font->Color=clRed;
+        VPrincipal->Panel2->Font->Color=clRed;}
+    }
+    else if(hexa && Sender == Panel1){                 // Memoria Hex
+        if(!insert){Edit1->Text="Error insert num";
+        }else{
+        memo = Edit1->Text.ToInt();
         VPrincipal->Panel1->Font->Color=clRed;
         VPrincipal->Panel2->Font->Color=clRed;}
     }
@@ -292,8 +371,12 @@ void __fastcall TVPrincipal::ButtonsMemo(TObject *Sender)
         VPrincipal->Panel1->Font->Color=clWindowText;
         VPrincipal->Panel2->Font->Color=clWindowText;
     }                       
-    if(Sender == Button20){                            // Recall
+    if(!hexa && Sender == Button20){                   // Recall
         Edit1->Text=memo;
+        insert=true;
+    }
+    else if(hexa && Sender == Button20){               // Recall Hex
+        Edit1->Text="0x"+IntToHex(memo, 4);
         insert=true;
     }
 }
@@ -307,10 +390,11 @@ double redondeo(double num){
 void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
 {
     hexa=false;
+    TVPrincipal::ButtonsClear(Button13);
     VPrincipal->CheckBoxHexa->Checked=false;
     VPrincipal->ClientHeight=510;
     VPrincipal->Panel3->Top=224;
-    VPrincipal->Panel3->Visible=VPrincipal->CheckBoxDeci->Checked;
+    VPrincipal->Panel3->Visible=true;
     VPrincipal->Panel4->Visible=false;
     VPrincipal->Image1->Visible=true;
     VPrincipal->Button12->Visible=true;
@@ -327,13 +411,13 @@ void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
 
 void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
 {
-    TVPrincipal::ButtonsClear(Button13);
     hexa=true;
+    TVPrincipal::ButtonsClear(Button13);
     VPrincipal->CheckBoxDeci->Checked=false;
     VPrincipal->ClientHeight=634;
     VPrincipal->Panel3->Top=352;
-    VPrincipal->Panel4->Visible=VPrincipal->CheckBoxHexa->Checked;
-    VPrincipal->Panel3->Visible=VPrincipal->CheckBoxHexa->Checked;
+    VPrincipal->Panel4->Visible=true;
+    VPrincipal->Panel3->Visible=true;
     VPrincipal->Image1->Visible=false;
     VPrincipal->Button12->Visible=false;
     VPrincipal->Button18->Width=113;
@@ -344,19 +428,49 @@ void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
     VPrincipal->Button16->OnClick=ButtonOperatorHex;
     VPrincipal->Image2->OnClick=ButtonOperatorHex;
     VPrincipal->Button18->OnClick=ButtonOperatorHex;
+    Edit1->Text="0x";
 }
 //---------------------------------------------------------------------------
-/*
-double hexstr2double(const std::string& hexstr)
+void __fastcall TVPrincipal::MenuSpainClick(TObject *Sender)
 {
-    double d = 0.0;
-
-    try{
-        *reinterpret_cast<unsigned long long*>(&d) = std::stoull(hexstr, nullptr, 16);
-    }
-    catch(...){}
-
-    return d;
+    VPrincipal->Panel5->Color=clRed;
+    VPrincipal->Panel4->Color=clYellow;
+    VPrincipal->Panel3->Color=clRed;
+    VPrincipal->CheckBoxDeci->Color=clRed;
+    VPrincipal->CheckBoxHexa->Color=clRed;
+    VPrincipal->CheckBoxDeci->Font->Color=clBlack;
+    VPrincipal->CheckBoxHexa->Font->Color=clBlack;
 }
-*/
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuRepublicaClick(TObject *Sender)
+{
+    VPrincipal->Panel5->Color=clRed;
+    VPrincipal->Panel4->Color=clYellow;
+    VPrincipal->Panel3->Color=clPurple;
+    VPrincipal->CheckBoxDeci->Font->Color=clBlack;
+    VPrincipal->CheckBoxHexa->Font->Color=clBlack;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuAlemaniaClick(TObject *Sender)
+{
+    VPrincipal->Color=clGreen;
+    VPrincipal->Panel5->Color=clBlack;
+    VPrincipal->Panel4->Color=clRed;
+    VPrincipal->Panel3->Color=clYellow;
+    VPrincipal->CheckBoxDeci->Color=clBlack;
+    VPrincipal->CheckBoxHexa->Color=clBlack;
+    VPrincipal->CheckBoxDeci->Font->Color=clWhite;
+    VPrincipal->CheckBoxHexa->Font->Color=clWhite;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuDecimalClick(TObject *Sender)
+{
+    VPrincipal->CheckBoxDeci->Checked=true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::MenuHexadecimalClick(TObject *Sender)
+{
+    VPrincipal->CheckBoxHexa->Checked=true;
+}
+//---------------------------------------------------------------------------
 
