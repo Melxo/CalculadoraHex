@@ -1,6 +1,6 @@
 object VPrincipal: TVPrincipal
-  Left = 423
-  Top = 278
+  Left = -1264
+  Top = 337
   BorderStyle = bsSingle
   Caption = 'Calculadora'
   ClientHeight = 636
