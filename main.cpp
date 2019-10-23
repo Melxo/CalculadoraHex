@@ -5,7 +5,6 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
-//#include <string>
 #define FIL 99
 #define COL 2
 #define SUMA 1
@@ -35,8 +34,8 @@ __fastcall TVPrincipal::TVPrincipal(TComponent* Owner)
     : TForm(Owner){
     VPrincipal->Panel3->Top=224;
     VPrincipal->ClientHeight=510;
-    VPrincipal->Left=300;
-    VPrincipal->Top= 300;
+    //VPrincipal->Left=800;
+    //VPrincipal->Top= 200;
 
 DWORD alignment = ES_RIGHT;                   //Alignament to right in Edit
 DWORD oldStyle = GetWindowLong(Edit1->Handle, GWL_STYLE);
@@ -306,7 +305,7 @@ void calcuhexa(int oper, int dato){                    // Hexadecimal
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
 {
-    if(!hexa && Sender == Button13){           // Cancelar (Borra todo)
+    if(Sender == Button13 && !hexa){           // Cancelar (Borra todo)
         Edit1->Clear();
         Edit2->Clear();
         divi=false;
@@ -321,7 +320,7 @@ void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
                 }
             }
     }
-    else if(hexa && Sender == Button13){        // Cancelar (Borra todo) Hex
+    else if(Sender == Button13 && hexa){        // Cancelar (Borra todo) Hex
     Edit1->Text="0x";
     Edit2->Clear();
     divi=false;
@@ -338,11 +337,13 @@ void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
         }
     }
                                      // Cancelar Entrada (Borra última entrada)
-    if(!hexa && Sender == Button22){
-        Edit1->Clear();
+    if(Sender == Button22 && !hexa){
+        //Edit1->Clear();
         coma=false;
-    }else if(hexa && Sender == Button22){
-        Edit1->Text="0x";;
+        Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
+    }else if(Sender == Button22 && hexa){
+        //Edit1->Text="0x";
+        Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
     }
 
     if(Sender == Button18){          // Cancelar (Borra todo menos Edit1)

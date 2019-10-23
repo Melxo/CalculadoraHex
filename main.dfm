@@ -1,6 +1,6 @@
 object VPrincipal: TVPrincipal
-  Left = -1264
-  Top = 337
+  Left = 1171
+  Top = 158
   BorderStyle = bsSingle
   Caption = 'Calculadora'
   ClientHeight = 636
@@ -741,10 +741,10 @@ object VPrincipal: TVPrincipal
       Top = 8
       Width = 49
       Height = 49
-      Caption = 'CE'
+      Caption = 'DEL'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -31
+      Font.Height = -24
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
