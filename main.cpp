@@ -25,7 +25,7 @@ double data[FIL][COL], sol=0, raiz=0;
 int fila=0, memo=0;
 int datahex[FIL][COL], solhex=0, operando=0, leftshift=0, rightshift=0;
 bool divi=false, insert=false, opera=false, cero=false, hexa=false;
-bool shiftL=false, shiftR=false, coma=false;
+bool shiftL=false, shiftR=false, coma=false, error=false;
 void calculadora(int, double);
 void calcuhexa(int, int);
 double redondeo(double);
@@ -56,7 +56,7 @@ void __fastcall TVPrincipal::OnClickNum(TObject *Sender)
     if(Sender == Button9){Edit1->Text=Edit1->Text+9;}
     if(Sender == Button10){Edit1->Text=Edit1->Text+0;}
     if(Sender == Button11){Edit1->Text=Edit1->Text*"-1";}
-    if(Sender == Button12){if(coma){Edit1->Text="Error, comas";
+    if(Sender == Button12){if(coma){Edit1->Text="Error, comas";error=true;
     }else{Edit1->Text=Edit1->Text+",";coma=true;}}
     if(Sender == Button17){Edit1->Text=Edit1->Text+"A";}
     if(Sender == Button19){Edit1->Text=Edit1->Text+"B";}
@@ -64,6 +64,7 @@ void __fastcall TVPrincipal::OnClickNum(TObject *Sender)
     if(Sender == Button29){Edit1->Text=Edit1->Text+"D";}
     if(Sender == Button28){Edit1->Text=Edit1->Text+"E";}
     if(Sender == Button27){Edit1->Text=Edit1->Text+"F";}
+    if(Sender == Button32){Edit1->Text=Edit1->Text+"0x";}
     datahex[0][0]= SUMA;  // Asume primer numero positivo por defecto
     data[0][0]= SUMA;  // Asume primer numero positivo por defecto
     opera=true;     // Para el signo menos
@@ -74,7 +75,7 @@ void __fastcall TVPrincipal::OnClickNum(TObject *Sender)
 void __fastcall TVPrincipal::ButtonOperator(TObject *Sender)
 {
 if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
-}else if(!insert ){Edit1->Text="Error insert num";
+}else if(!insert ){Edit1->Text="Error insert num";error=true;
 }else{
     data[fila][1]= Edit1->Text.ToDouble();
 
@@ -141,7 +142,7 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
 void __fastcall TVPrincipal::ButtonOperatorHex(TObject *Sender)
 {
 if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
-}else if(!insert){Edit1->Text="Error insert num";
+}else if(!insert){Edit1->Text="Error insert num";error=true;
 //}else if(hexa){TVPrincipal::ButtonsClear(Button18);
 }else{
 
@@ -209,8 +210,9 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
         Edit1->Text="0x";
         insert=false;
     }
-    if(Sender == Button25){                              // NOT
-        Edit2->Text="NOT (0x"+Edit1->Text+")=";
+    if(Sender == Button25){
+        operando = Edit1->Text.ToInt();                  // NOT
+        Edit2->Text="NOT ("+Edit1->Text+")=";
         solhex = ~operando;
         Edit1->Text="0x"+IntToHex(solhex, DIGIHEX);
         insert=false;
@@ -305,6 +307,8 @@ void calcuhexa(int oper, int dato){                    // Hexadecimal
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
 {
+if(error){Edit1->Clear();error=false;coma=false;
+}else{
     if(Sender == Button13 && !hexa){           // Cancelar (Borra todo)
         Edit1->Clear();
         Edit2->Clear();
@@ -336,8 +340,8 @@ void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
             }
         }
     }
-                                     // Cancelar Entrada (Borra última entrada)
-    if(Sender == Button22 && !hexa){
+
+    if(Sender == Button22 && !hexa){  // Cancelar Entrada (Borra última entrada)
         //Edit1->Clear();
         coma=false;
         Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
@@ -361,6 +365,7 @@ void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
             }
         }
     }
+}
 }
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonsMemo(TObject *Sender)
@@ -418,6 +423,7 @@ void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
     VPrincipal->Button14->OnClick=ButtonOperator;
     VPrincipal->Button15->OnClick=ButtonOperator;
     VPrincipal->Button16->OnClick=ButtonOperator;
+    VPrincipal->Button32->Visible=false;
     VPrincipal->Image2->OnClick=ButtonOperator;
     VPrincipal->Button18->OnClick=ButtonOperator;
 }
@@ -436,11 +442,11 @@ void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
     VPrincipal->Button12->Visible=false;
     VPrincipal->Button18->Width=113;
     VPrincipal->Button18->Left=208;
-    VPrincipal->Button10->Width=113;
     VPrincipal->Button11->OnClick=ButtonOperatorHex;
     VPrincipal->Button14->OnClick=ButtonOperatorHex;
     VPrincipal->Button15->OnClick=ButtonOperatorHex;
     VPrincipal->Button16->OnClick=ButtonOperatorHex;
+    VPrincipal->Button32->Visible=true;
     VPrincipal->Image2->OnClick=ButtonOperatorHex;
     VPrincipal->Button18->OnClick=ButtonOperatorHex;
     Edit1->Text="0x";
