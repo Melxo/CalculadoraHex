@@ -766,6 +766,22 @@ object VPrincipal: TVPrincipal
       TabOrder = 17
       OnClick = OnClickNum
     end
+    object Button32: TButton
+      Left = 136
+      Top = 200
+      Width = 49
+      Height = 49
+      Caption = '0x'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 18
+      Visible = False
+      OnClick = OnClickNum
+    end
   end
   object Panel4: TPanel
     Left = 24

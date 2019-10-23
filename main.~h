@@ -64,6 +64,7 @@ __published:	// IDE-managed Components
     TMenuItem *MenuSpain;
     TMenuItem *MenuRepublica;
     TMenuItem *MenuAlemania;
+    TButton *Button32;
     void __fastcall OnClickNum(TObject *Sender);
     void __fastcall ButtonOperator(TObject *Sender);
     void __fastcall ButtonsClear(TObject *Sender);

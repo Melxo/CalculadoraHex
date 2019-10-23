@@ -3,7 +3,7 @@ object VPrincipal: TVPrincipal
   Top = 158
   BorderStyle = bsSingle
   Caption = 'Calculadora'
-  ClientHeight = 636
+  ClientHeight = 652
   ClientWidth = 379
   Color = clBackground
   Font.Charset = DEFAULT_CHARSET
@@ -1091,9 +1091,47 @@ object VPrincipal: TVPrincipal
       OnClick = OnClickHexa
     end
   end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 635
+    Width = 379
+    Height = 17
+    Panels = <
+      item
+        Alignment = taCenter
+        BiDiMode = bdLeftToRight
+        ParentBiDiMode = False
+        Text = 'MM/DD/YY'
+        Width = 65
+      end
+      item
+        Alignment = taRightJustify
+        BiDiMode = bdRightToLeft
+        ParentBiDiMode = False
+        Text = 'HH:MM:SS'
+        Width = 65
+      end>
+    SimplePanel = False
+  end
   object MainMenu1: TMainMenu
-    Left = 8
-    Top = 8
+    object Archivo1: TMenuItem
+      Caption = 'Archivo'
+      object Notas1: TMenuItem
+        Caption = 'Notas'
+        ShortCut = 16462
+        OnClick = NotasClick
+      end
+      object Poliformat1: TMenuItem
+        Caption = 'Poliformat'
+        ShortCut = 16464
+        OnClick = Poliformat1Click
+      end
+      object Exit: TMenuItem
+        Caption = 'Salir'
+        ShortCut = 16467
+        OnClick = ExitClick
+      end
+    end
     object MenuModo: TMenuItem
       Caption = 'Modo'
       ShortCut = 16461
@@ -1127,5 +1165,9 @@ object VPrincipal: TVPrincipal
         OnClick = MenuAlemaniaClick
       end
     end
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 352
   end
 end

@@ -2,6 +2,7 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "main.h"
+#include <windows.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -33,9 +34,9 @@ double redondeo(double);
 __fastcall TVPrincipal::TVPrincipal(TComponent* Owner)
     : TForm(Owner){
     VPrincipal->Panel3->Top=224;
-    VPrincipal->ClientHeight=510;
-    //VPrincipal->Left=800;
-    //VPrincipal->Top= 200;
+    VPrincipal->ClientHeight=528;
+    VPrincipal->Left=800;
+    VPrincipal->Top= 200;
 
 DWORD alignment = ES_RIGHT;                   //Alignament to right in Edit
 DWORD oldStyle = GetWindowLong(Edit1->Handle, GWL_STYLE);
@@ -65,11 +66,10 @@ void __fastcall TVPrincipal::OnClickNum(TObject *Sender)
     if(Sender == Button28){Edit1->Text=Edit1->Text+"E";}
     if(Sender == Button27){Edit1->Text=Edit1->Text+"F";}
     if(Sender == Button32){Edit1->Text=Edit1->Text+"0x";}
-    datahex[0][0]= SUMA;  // Asume primer numero positivo por defecto
-    data[0][0]= SUMA;  // Asume primer numero positivo por defecto
-    opera=true;     // Para el signo menos
-    insert=true;    // Para detectar numero en Edit1
-    if(hexa){}
+    datahex[0][0]= SUMA; // Asume primer numero positivo por defecto
+    data[0][0]= SUMA;    // Asume primer numero positivo por defecto
+    opera=true;          // Para el signo menos
+    insert=true;         // Para detectar numero en Edit1
 }
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonOperator(TObject *Sender)
@@ -143,7 +143,6 @@ void __fastcall TVPrincipal::ButtonOperatorHex(TObject *Sender)
 {
 if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
 }else if(!insert){Edit1->Text="Error insert num";error=true;
-//}else if(hexa){TVPrincipal::ButtonsClear(Button18);
 }else{
 
     if(Sender == Button14){                            // suma HEX
@@ -215,7 +214,6 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
         Edit2->Text="NOT ("+Edit1->Text+")=";
         solhex = ~operando;
         Edit1->Text="0x"+IntToHex(solhex, DIGIHEX);
-        insert=false;
     }
     if(Sender == Button30){                              // Shift lefth<<
         shiftR=false;
@@ -254,7 +252,6 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
                 }
             }
         Edit1->Text="0x"+IntToHex(solhex, DIGIHEX);
-        //TVPrincipal::ButtonsClear(Button18);
         Label1:
     }
     if(Sender == Button11){                   // Cambio de signo en Hex
@@ -341,12 +338,10 @@ if(error){Edit1->Clear();error=false;coma=false;
         }
     }
 
-    if(Sender == Button22 && !hexa){  // Cancelar Entrada (Borra última entrada)
-        //Edit1->Clear();
+    if(Sender == Button22 && !hexa){                        // Delete
         coma=false;
         Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
     }else if(Sender == Button22 && hexa){
-        //Edit1->Text="0x";
         Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
     }
 
@@ -410,7 +405,7 @@ void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
     hexa=false;
     TVPrincipal::ButtonsClear(Button13);
     VPrincipal->CheckBoxHexa->Checked=false;
-    VPrincipal->ClientHeight=510;
+    VPrincipal->ClientHeight=528;
     VPrincipal->Panel3->Top=224;
     VPrincipal->Panel3->Visible=true;
     VPrincipal->Panel4->Visible=false;
@@ -419,7 +414,7 @@ void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
     VPrincipal->Button18->Width=49;
     VPrincipal->Button18->Left=272;
     VPrincipal->Button10->Width=49;
-    VPrincipal->Button11->OnClick=ButtonOperator;
+    VPrincipal->Button11->OnClick=OnClickNum;
     VPrincipal->Button14->OnClick=ButtonOperator;
     VPrincipal->Button15->OnClick=ButtonOperator;
     VPrincipal->Button16->OnClick=ButtonOperator;
@@ -434,7 +429,7 @@ void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
     hexa=true;
     TVPrincipal::ButtonsClear(Button13);
     VPrincipal->CheckBoxDeci->Checked=false;
-    VPrincipal->ClientHeight=634;
+    VPrincipal->ClientHeight=652;
     VPrincipal->Panel3->Top=352;
     VPrincipal->Panel4->Visible=true;
     VPrincipal->Panel3->Visible=true;
@@ -496,6 +491,32 @@ void __fastcall TVPrincipal::MenuDecimalClick(TObject *Sender)
 void __fastcall TVPrincipal::MenuHexadecimalClick(TObject *Sender)
 {
     VPrincipal->CheckBoxHexa->Checked=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TVPrincipal::ExitClick(TObject *Sender)
+{
+    Close();
+}
+//---------------------------------------------------------------------------o
+void __fastcall TVPrincipal::Timer1Timer(TObject *Sender)
+{
+    StatusBar1->Panels->Items[1]->Text = Now().TimeString();
+    StatusBar1->Panels->Items[0]->Text = Now().DateString();
+}
+//---------------------------------------------------------------------------
+void __fastcall TVPrincipal::NotasClick(TObject *Sender)
+{
+    AnsiString prog = "notepad.exe";
+    ShellExecute(Handle, NULL, prog.c_str(), NULL, NULL, SW_SHOWNORMAL);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TVPrincipal::Poliformat1Click(TObject *Sender)
+{
+   AnsiString prog = "https://poliformat.upv.es/portal/site/!gateway-es/tool/"
+                     "351c5e3d-c2e5-45ba-b34b-8814e7e01e27/selectlogin";
+   ShellExecute(Handle, NULL, prog.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 //---------------------------------------------------------------------------
 
