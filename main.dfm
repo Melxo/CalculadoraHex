@@ -782,6 +782,22 @@ object VPrincipal: TVPrincipal
       Visible = False
       OnClick = OnClickNum
     end
+    object Button33: TButton
+      Left = 208
+      Top = 200
+      Width = 49
+      Height = 49
+      Caption = 'BIN'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 19
+      Visible = False
+      OnClick = ButtonOperatorHex
+    end
   end
   object Panel4: TPanel
     Left = 24
@@ -1117,7 +1133,7 @@ object VPrincipal: TVPrincipal
     object Archivo1: TMenuItem
       Caption = 'Archivo'
       object Notas1: TMenuItem
-        Caption = 'Notas'
+        Caption = 'Bloc de notas'
         ShortCut = 16462
         OnClick = NotasClick
       end

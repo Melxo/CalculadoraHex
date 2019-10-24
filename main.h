@@ -72,6 +72,7 @@ __published:	// IDE-managed Components
     TStatusBar *StatusBar1;
     TTimer *Timer1;
     TMenuItem *Poliformat1;
+    TButton *Button33;
     void __fastcall OnClickNum(TObject *Sender);
     void __fastcall ButtonOperator(TObject *Sender);
     void __fastcall ButtonsClear(TObject *Sender);

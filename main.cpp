@@ -35,8 +35,8 @@ __fastcall TVPrincipal::TVPrincipal(TComponent* Owner)
     : TForm(Owner){
     VPrincipal->Panel3->Top=224;
     VPrincipal->ClientHeight=528;
-    VPrincipal->Left=800;
-    VPrincipal->Top= 200;
+    //VPrincipal->Left=800;
+    //VPrincipal->Top= 200;
 
 DWORD alignment = ES_RIGHT;                   //Alignament to right in Edit
 DWORD oldStyle = GetWindowLong(Edit1->Handle, GWL_STYLE);
@@ -65,7 +65,7 @@ void __fastcall TVPrincipal::OnClickNum(TObject *Sender)
     if(Sender == Button29){Edit1->Text=Edit1->Text+"D";}
     if(Sender == Button28){Edit1->Text=Edit1->Text+"E";}
     if(Sender == Button27){Edit1->Text=Edit1->Text+"F";}
-    if(Sender == Button32){Edit1->Text=Edit1->Text+"0x";}
+    if(Sender == Button32){Edit1->Text="0x";}
     datahex[0][0]= SUMA; // Asume primer numero positivo por defecto
     data[0][0]= SUMA;    // Asume primer numero positivo por defecto
     opera=true;          // Para el signo menos
@@ -130,7 +130,6 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
                 goto Label1;
                 }
             }
-        Edit1->Clear();
         Edit1->Text=sol;
         TVPrincipal::ButtonsClear(Button18);
         Label1:
@@ -254,10 +253,24 @@ if(!opera && Sender==Button15){Edit1->Text="-"; insert=false; opera=true;
         Edit1->Text="0x"+IntToHex(solhex, DIGIHEX);
         Label1:
     }
-    if(Sender == Button11){                   // Cambio de signo en Hex
+    if(Sender == Button11){                           // Cambio de signo en Hex
         int temp = Edit1->Text.ToInt();
         temp *= (-1);
         Edit1->Text="0x"+IntToHex(temp, DIGIHEX);
+    }
+    if(Sender == Button33){                           // Hex to Bin
+        operando = Edit1->Text.ToInt();
+        Edit2->Text="Bin("+Edit1->Text+")=";
+        Edit1->Clear();
+        int bin[16], i;
+            for(i=0; operando>0; i++){
+                bin[i]=operando%2;
+                operando/=2;
+            }
+            for(i-=1; i>=0; i--){
+                Edit1->Text=Edit1->Text+bin[i];
+            }
+    insert=false;
     }
 }
 }
@@ -304,7 +317,8 @@ void calcuhexa(int oper, int dato){                    // Hexadecimal
 //---------------------------------------------------------------------------
 void __fastcall TVPrincipal::ButtonsClear(TObject *Sender)
 {
-if(error){Edit1->Clear();error=false;coma=false;
+if(error && !hexa){Edit1->Clear();error=false;coma=false;
+}else if(error && hexa){Edit1->Text="0x";error=false;coma=false;
 }else{
     if(Sender == Button13 && !hexa){           // Cancelar (Borra todo)
         Edit1->Clear();
@@ -343,6 +357,7 @@ if(error){Edit1->Clear();error=false;coma=false;
         Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
     }else if(Sender == Button22 && hexa){
         Edit1->Text=Edit1->Text.Delete(Edit1->Text.Length(),1);
+        if(Edit1->Text==""){Edit1->Text="0x";}
     }
 
     if(Sender == Button18){          // Cancelar (Borra todo menos Edit1)
@@ -399,7 +414,6 @@ double redondeo(double num){
     return rounded;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
 {
     hexa=false;
@@ -411,19 +425,17 @@ void __fastcall TVPrincipal::OnClickDeci(TObject *Sender)
     VPrincipal->Panel4->Visible=false;
     VPrincipal->Image1->Visible=true;
     VPrincipal->Button12->Visible=true;
-    VPrincipal->Button18->Width=49;
-    VPrincipal->Button18->Left=272;
     VPrincipal->Button10->Width=49;
     VPrincipal->Button11->OnClick=OnClickNum;
     VPrincipal->Button14->OnClick=ButtonOperator;
     VPrincipal->Button15->OnClick=ButtonOperator;
     VPrincipal->Button16->OnClick=ButtonOperator;
     VPrincipal->Button32->Visible=false;
+    VPrincipal->Button33->Visible=false;
     VPrincipal->Image2->OnClick=ButtonOperator;
     VPrincipal->Button18->OnClick=ButtonOperator;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
 {
     hexa=true;
@@ -435,13 +447,12 @@ void __fastcall TVPrincipal::OnClickHexa(TObject *Sender)
     VPrincipal->Panel3->Visible=true;
     VPrincipal->Image1->Visible=false;
     VPrincipal->Button12->Visible=false;
-    VPrincipal->Button18->Width=113;
-    VPrincipal->Button18->Left=208;
     VPrincipal->Button11->OnClick=ButtonOperatorHex;
     VPrincipal->Button14->OnClick=ButtonOperatorHex;
     VPrincipal->Button15->OnClick=ButtonOperatorHex;
     VPrincipal->Button16->OnClick=ButtonOperatorHex;
     VPrincipal->Button32->Visible=true;
+    VPrincipal->Button33->Visible=true;
     VPrincipal->Image2->OnClick=ButtonOperatorHex;
     VPrincipal->Button18->OnClick=ButtonOperatorHex;
     Edit1->Text="0x";
@@ -493,7 +504,6 @@ void __fastcall TVPrincipal::MenuHexadecimalClick(TObject *Sender)
     VPrincipal->CheckBoxHexa->Checked=true;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TVPrincipal::ExitClick(TObject *Sender)
 {
     Close();
@@ -511,7 +521,6 @@ void __fastcall TVPrincipal::NotasClick(TObject *Sender)
     ShellExecute(Handle, NULL, prog.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TVPrincipal::Poliformat1Click(TObject *Sender)
 {
    AnsiString prog = "https://poliformat.upv.es/portal/site/!gateway-es/tool/"

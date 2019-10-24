@@ -10,6 +10,7 @@
 #include <ExtCtrls.hpp>
 #include <Graphics.hpp>
 #include <Menus.hpp>
+#include <ComCtrls.hpp>
 //---------------------------------------------------------------------------
 class TVPrincipal : public TForm
 {
@@ -65,6 +66,13 @@ __published:	// IDE-managed Components
     TMenuItem *MenuRepublica;
     TMenuItem *MenuAlemania;
     TButton *Button32;
+    TMenuItem *Archivo1;
+    TMenuItem *Notas1;
+    TMenuItem *Exit;
+    TStatusBar *StatusBar1;
+    TTimer *Timer1;
+    TMenuItem *Poliformat1;
+    TButton *Button33;
     void __fastcall OnClickNum(TObject *Sender);
     void __fastcall ButtonOperator(TObject *Sender);
     void __fastcall ButtonsClear(TObject *Sender);
@@ -77,6 +85,10 @@ __published:	// IDE-managed Components
     void __fastcall MenuAlemaniaClick(TObject *Sender);
     void __fastcall MenuDecimalClick(TObject *Sender);
     void __fastcall MenuHexadecimalClick(TObject *Sender);
+    void __fastcall ExitClick(TObject *Sender);
+    void __fastcall Timer1Timer(TObject *Sender);
+    void __fastcall NotasClick(TObject *Sender);
+    void __fastcall Poliformat1Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
     __fastcall TVPrincipal(TComponent* Owner);
